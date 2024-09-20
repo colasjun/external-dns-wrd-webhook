@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	wrd "github.com/colasjun/external-dns-wrd-webhook/provider"
+	"github.com/colasjun/external-dns-wrd-webhook/provider"
 	"net/http"
 	"os"
 	"strings"
@@ -160,7 +160,7 @@ func buildWebhookServer(logger log.Logger) (*http.ServeMux, error) {
 	var recordsPath = "/records"
 	var adjustEndpointsPath = "/adjustendpoints"
 
-	ncProvider, err := wrd.NewWrdProvider(domainFilter, *customerID, *apiKey, *apiPassword, *dryRun, logger)
+	ncProvider, err := provider.NewWrdProvider(domainFilter, *customerID, *apiKey, *apiPassword, *dryRun, logger)
 	if err != nil {
 		return nil, err
 	}
