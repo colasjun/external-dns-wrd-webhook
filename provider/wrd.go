@@ -1,4 +1,4 @@
-package wrd
+package provider
 
 import (
 	"context"

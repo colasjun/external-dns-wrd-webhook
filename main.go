@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	wrd "github.com/colasjun/external-dns-netcup-webhook/provider"
+	wrd "github.com/colasjun/external-dns-wrd-webhook/provider"
 	"net/http"
 	"os"
 	"strings"
@@ -91,7 +91,7 @@ func main() {
 	// Run Metrics server
 	{
 		g.Add(func() error {
-			_ = level.Info(logger).Log("msg", "Started external-dns-netcup-webhook metrics server", "address", metricsListenAddr)
+			_ = level.Info(logger).Log("msg", "Started external-dns-wrd-webhook metrics server", "address", metricsListenAddr)
 			return web.ListenAndServe(&metricsServer, &metricsFlags, logger)
 		}, func(error) {
 			ctxShutDown, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -102,7 +102,7 @@ func main() {
 	// Run webhook API server
 	{
 		g.Add(func() error {
-			_ = level.Info(logger).Log("msg", "Started external-dns-netcup-webhook webhook server", "address", listenAddr)
+			_ = level.Info(logger).Log("msg", "Started external-dns-wrd-webhook webhook server", "address", listenAddr)
 			return web.ListenAndServe(&webhookServer, &webhookFlags, logger)
 		}, func(error) {
 			ctxShutDown, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -133,8 +133,8 @@ func buildMetricsServer(registry prometheus.Gatherer, logger log.Logger) *http.S
 
 	// Add index
 	landingConfig := web.LandingConfig{
-		Name:        "external-dns-netcup-webhook",
-		Description: "external-dns webhook provider for Netcup",
+		Name:        "external-dns-wrd-webhook",
+		Description: "external-dns webhook provider for wrd",
 		Version:     version.Info(),
 		Links: []web.LandingLinks{
 			{

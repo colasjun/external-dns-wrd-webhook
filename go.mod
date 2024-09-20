@@ -1,4 +1,4 @@
-module github.com/colasjun/external-dns-netcup-webhook
+module github.com/colasjun/external-dns-wrd-webhook
 
 go 1.23
 
@@ -8,7 +8,7 @@ require (
 	github.com/aellwein/netcup-dns-api v1.0.5
 	github.com/alecthomas/kingpin/v2 v2.4.0
 	github.com/go-kit/log v0.2.1
-	github.com/mrueg/external-dns-netcup-webhook v0.0.0-20240909123831-d6950019fe22
+	github.com/mrueg/external-dns-wrd-webhook v0.0.0-20240909123831-d6950019fe22
 	github.com/oklog/run v1.1.0
 	github.com/prometheus/client_golang v1.20.3
 	github.com/prometheus/common v0.59.1
