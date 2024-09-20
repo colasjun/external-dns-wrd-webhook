@@ -28,11 +28,11 @@ var (
 	metricsListenAddr = kingpin.Flag("metrics-listen-address", "The address this plugin provides metrics on").Default(":8889").Envar("NETCUP_METRICS_LISTEN_ADDRESS").String()
 	tlsConfig         = kingpin.Flag("tls-config", "Path to TLS config file.").Envar("NETCUP_TLS_CONFIG").Default("").String()
 
-	domainFilter = kingpin.Flag("domain-filter", "Limit possible target zones by a domain suffix; specify multiple times for multiple domains").Required().Envar("NETCUP_DOMAIN_FILTER").Strings()
+	domainFilter = kingpin.Flag("domain-filter", "Limit possible target zones by a domain suffix; specify multiple times for multiple domains").Envar("NETCUP_DOMAIN_FILTER").Strings()
 	dryRun       = kingpin.Flag("dry-run", "Run without connecting to Netcup's CCP API").Default("false").Envar("NETCUP_DRY_RUN").Bool()
-	customerID   = kingpin.Flag("netcup-customer-id", "The Netcup customer id").Required().Envar("NETCUP_CUSTOMER_ID").Int()
-	apiKey       = kingpin.Flag("netcup-api-key", "The api key to connect to Netcup's CCP API").Required().Envar("NETCUP_API_KEY").String()
-	apiPassword  = kingpin.Flag("netcup-api-password", "The api password to connect to Netcup's CCP API").Required().Envar("NETCUP_API_PASSWORD").String()
+	customerID   = kingpin.Flag("netcup-customer-id", "The Netcup customer id").Envar("NETCUP_CUSTOMER_ID").Int()
+	apiKey       = kingpin.Flag("netcup-api-key", "The api key to connect to Netcup's CCP API").Envar("NETCUP_API_KEY").String()
+	apiPassword  = kingpin.Flag("netcup-api-password", "The api password to connect to Netcup's CCP API").Envar("NETCUP_API_PASSWORD").String()
 
 	user = kingpin.Flag("wrd-user", "Wrd user.").Envar("WRD_USER").Default("").String()
 )
