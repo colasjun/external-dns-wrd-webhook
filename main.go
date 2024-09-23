@@ -6,7 +6,6 @@ import (
 	"github.com/colasjun/external-dns-wrd-webhook/provider"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/alecthomas/kingpin/v2"
@@ -30,9 +29,6 @@ var (
 
 	domainFilter = kingpin.Flag("domain-filter", "Limit possible target zones by a domain suffix; specify multiple times for multiple domains").Envar("NETCUP_DOMAIN_FILTER").Strings()
 	dryRun       = kingpin.Flag("dry-run", "Run without connecting to Netcup's CCP API").Default("false").Envar("NETCUP_DRY_RUN").Bool()
-	customerID   = kingpin.Flag("netcup-customer-id", "The Netcup customer id").Envar("NETCUP_CUSTOMER_ID").Int()
-	apiKey       = kingpin.Flag("netcup-api-key", "The api key to connect to Netcup's CCP API").Envar("NETCUP_API_KEY").String()
-	apiPassword  = kingpin.Flag("netcup-api-password", "The api password to connect to Netcup's CCP API").Envar("NETCUP_API_PASSWORD").String()
 
 	user = kingpin.Flag("wrd-user", "Wrd user.").Envar("WRD_USER").Default("").String()
 )
@@ -55,7 +51,6 @@ func main() {
 	logger = level.NewFilter(logger, level.Allow(level.ParseDefault(*logLevel, level.InfoValue())))
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC, "caller", log.DefaultCaller)
 	_ = level.Info(logger).Log("msg", "starting external-dns Netcup webhook plugin", "version", version.Version, "revision", version.Revision)
-	_ = level.Debug(logger).Log("customer-id", *customerID, "api-key", strings.Repeat("*", len(*apiKey)), "api-password", strings.Repeat("*", len(*apiPassword)))
 	_ = level.Debug(logger).Log("wrd-user", *user)
 
 	prometheus.DefaultRegisterer.MustRegister(cversion.NewCollector("external_dns_netcup"))
@@ -160,7 +155,7 @@ func buildWebhookServer(logger log.Logger) (*http.ServeMux, error) {
 	var recordsPath = "/records"
 	var adjustEndpointsPath = "/adjustendpoints"
 
-	ncProvider, err := provider.NewWrdProvider(domainFilter, *customerID, *apiKey, *apiPassword, *dryRun, logger)
+	ncProvider, err := provider.NewWrdProvider(domainFilter, *dryRun, logger)
 	if err != nil {
 		return nil, err
 	}

@@ -57,7 +57,7 @@ spec:
         - --source=pod
         - --provider=webhook
       - name: external-dns-webhook-provider
-        image: ghcr.io/mrueg/external-dns-netcup-webhook:latest
+        image: ghcr.io/colasjun/external-dns-wrd-webhook:v0.1
         imagePullPolicy: Always
         args:
         - --log-level=debug
@@ -66,4 +66,6 @@ spec:
         - --dry-run=true
         - --wrd-user=lijun
         - --wrd-password=xixii
+
+
 

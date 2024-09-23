@@ -33,8 +33,18 @@ type WrdChange struct {
 	Delete    *[]nc.DnsRecord
 }
 
+type DnsRecord struct {
+	Id           string `json:"id"`
+	Hostname     string `json:"hostname"`
+	Type         string `json:"type"`
+	Priority     string `json:"priority"`
+	Destination  string `json:"destination"`
+	DeleteRecord bool   `json:"deleterecord"`
+	State        string `json:"state"`
+}
+
 // NewWrdProvider creates a new provider including the wrd API client
-func NewWrdProvider(domainFilterList *[]string, customerID int, apiKey string, apiPassword string, dryRun bool, logger log.Logger) (*WrdProvider, error) {
+func NewWrdProvider(domainFilterList *[]string, dryRun bool, logger log.Logger) (*WrdProvider, error) {
 	domainFilter := endpoint.NewDomainFilter(*domainFilterList)
 
 	if !domainFilter.IsConfigured() {
