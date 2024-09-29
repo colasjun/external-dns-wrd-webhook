@@ -8,15 +8,15 @@ kind: ClusterRole
 metadata:
   name: external-dns
 rules:
-- apiGroups: [""]
-  resources: ["services","endpoints","pods"]
-  verbs: ["get","watch","list"]
-- apiGroups: ["extensions","networking.k8s.io"]
-  resources: ["ingresses"]
-  verbs: ["get","watch","list"]
-- apiGroups: [""]
-  resources: ["nodes"]
-  verbs: ["list", "watch"]
+  - apiGroups: [""]
+    resources: ["services","endpoints","pods"]
+    verbs: ["get","watch","list"]
+  - apiGroups: ["extensions","networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get","watch","list"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -27,9 +27,9 @@ roleRef:
   kind: ClusterRole
   name: external-dns
 subjects:
-- kind: ServiceAccount
-  name: external-dns
-  namespace: default
+  - kind: ServiceAccount
+    name: external-dns
+    namespace: default
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -48,20 +48,18 @@ spec:
     spec:
       serviceAccountName: external-dns
       containers:
-      - name: external-dns
-        image: registry.k8s.io/external-dns/external-dns:v0.14.0
-        args:
-        - --log-level=debug
-        - --source=ingress
-        - --source=service
-        - --source=pod
-        - --provider=webhook
-      - name: external-dns-webhook-provider
-        image: ghcr.io/colasjun/external-dns-wrd-webhook:v0.1
-        imagePullPolicy: Always
-        args:
-        - --log-level=debug
-        - --domain-filter=example.com
-
-
-
+        - name: external-dns
+          image: registry.k8s.io/external-dns/external-dns:v0.14.0
+          args:
+            - --log-level=debug
+            - --source=ingress
+            - --interval=3s
+            - --source=service
+            - --source=pod
+            - --provider=webhook
+        - name: external-dns-webhook-provider
+          image: ghcr.io/colasjun/external-dns-wrd-webhook:v0.8
+          imagePullPolicy: IfNotPresent
+          args:
+            - --log-level=debug
+            - --domain-filter=example.com

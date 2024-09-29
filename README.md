@@ -1,4 +1,4 @@
-# external-dns-netcup-webhook
+# external-dns-wrd-webhook
 
 External-DNS Webhook Provider to manage Netcup DNS Records
 

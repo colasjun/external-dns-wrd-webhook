@@ -138,6 +138,8 @@ func (p *WrdProvider) ApplyChanges(ctx context.Context, changes *plan.Changes) e
 		return nil
 	}
 
+	allEndpoints = []*endpoint.Endpoint{}
+
 	// todo 需要完善 和ddi对接
 	fmt.Printf("changes:%+v \n", changes)
 
@@ -166,6 +168,8 @@ func (p *WrdProvider) ApplyChanges(ctx context.Context, changes *plan.Changes) e
 		}
 		_ = level.Debug(p.logger).Log("msg", "planning", "type", "create", "endpoint", ep, "zone", zoneName)
 
+		allEndpoints = append(allEndpoints, ep)
+
 		perZoneChanges[zoneName].Create = append(perZoneChanges[zoneName].Create, ep)
 	}
 
@@ -176,8 +180,6 @@ func (p *WrdProvider) ApplyChanges(ctx context.Context, changes *plan.Changes) e
 			continue
 		}
 		_ = level.Debug(p.logger).Log("msg", "planning", "type", "updateOld", "endpoint", ep, "zone", zoneName)
-
-		allEndpoints = append(allEndpoints, ep)
 
 		perZoneChanges[zoneName].UpdateOld = append(perZoneChanges[zoneName].UpdateOld, ep)
 	}
