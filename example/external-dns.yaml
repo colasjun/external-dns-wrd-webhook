@@ -62,10 +62,6 @@ spec:
         args:
         - --log-level=debug
         - --domain-filter=example.com
-        - --netcup-customer-id=YOUR_ID
-        - --dry-run=true
-        - --wrd-user=lijun
-        - --wrd-password=xixii
 
 
 

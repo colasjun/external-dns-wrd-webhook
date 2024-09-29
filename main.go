@@ -28,9 +28,11 @@ var (
 	tlsConfig         = kingpin.Flag("tls-config", "Path to TLS config file.").Envar("NETCUP_TLS_CONFIG").Default("").String()
 
 	domainFilter = kingpin.Flag("domain-filter", "Limit possible target zones by a domain suffix; specify multiple times for multiple domains").Envar("NETCUP_DOMAIN_FILTER").Strings()
-	dryRun       = kingpin.Flag("dry-run", "Run without connecting to Netcup's CCP API").Default("false").Envar("NETCUP_DRY_RUN").Bool()
+	// dryRun       = kingpin.Flag("dry-run", "Run without connecting to Netcup's CCP API").Envar("NETCUP_DRY_RUN").Int()
 
 	user = kingpin.Flag("wrd-user", "Wrd user.").Envar("WRD_USER").Default("").String()
+
+	dryRun = 1
 )
 
 func main() {
@@ -155,7 +157,7 @@ func buildWebhookServer(logger log.Logger) (*http.ServeMux, error) {
 	var recordsPath = "/records"
 	var adjustEndpointsPath = "/adjustendpoints"
 
-	ncProvider, err := provider.NewWrdProvider(domainFilter, *dryRun, logger)
+	ncProvider, err := provider.NewWrdProvider(domainFilter, dryRun, logger)
 	if err != nil {
 		return nil, err
 	}

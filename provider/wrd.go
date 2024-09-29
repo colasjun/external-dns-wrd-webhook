@@ -15,13 +15,15 @@ import (
 	"sigs.k8s.io/external-dns/provider"
 )
 
+var allEndpoints []*endpoint.Endpoint
+
 // WrdProvider is an implementation of Provider for Wrd DNS.
 type WrdProvider struct {
 	provider.BaseProvider
 	// client       *nc.NetcupDnsClient
 	session      *nc.NetcupSession
 	domainFilter endpoint.DomainFilter
-	dryRun       bool
+	dryRun       int
 	logger       log.Logger
 }
 
@@ -44,7 +46,7 @@ type DnsRecord struct {
 }
 
 // NewWrdProvider creates a new provider including the wrd API client
-func NewWrdProvider(domainFilterList *[]string, dryRun bool, logger log.Logger) (*WrdProvider, error) {
+func NewWrdProvider(domainFilterList *[]string, dryRun int, logger log.Logger) (*WrdProvider, error) {
 	domainFilter := endpoint.NewDomainFilter(*domainFilterList)
 
 	if !domainFilter.IsConfigured() {
@@ -75,10 +77,14 @@ func NewWrdProvider(domainFilterList *[]string, dryRun bool, logger log.Logger) 
 
 // Records delivers the list of Endpoint records for all zones.
 func (p *WrdProvider) Records(ctx context.Context) ([]*endpoint.Endpoint, error) {
+	// todo 需要完善 和ddi对接
+
 	endpoints := make([]*endpoint.Endpoint, 0)
 
-	if p.dryRun {
+	if p.dryRun > 0 {
 		_ = level.Debug(p.logger).Log("msg", "dry run - skipping login")
+
+		return allEndpoints, nil
 	} else {
 		err := p.ensureLogin()
 		if err != nil {
@@ -121,6 +127,7 @@ func (p *WrdProvider) Records(ctx context.Context) ([]*endpoint.Endpoint, error)
 	for _, endpointItem := range endpoints {
 		_ = level.Debug(p.logger).Log("msg", "endpoints collected", "endpoints", endpointItem.String())
 	}
+
 	return endpoints, nil
 }
 
@@ -131,7 +138,10 @@ func (p *WrdProvider) ApplyChanges(ctx context.Context, changes *plan.Changes) e
 		return nil
 	}
 
-	if p.dryRun {
+	// todo 需要完善 和ddi对接
+	fmt.Printf("changes:%+v \n", changes)
+
+	if p.dryRun > 0 {
 		_ = level.Debug(p.logger).Log("msg", "dry run - skipping login")
 	} else {
 		err := p.ensureLogin()
@@ -167,6 +177,8 @@ func (p *WrdProvider) ApplyChanges(ctx context.Context, changes *plan.Changes) e
 		}
 		_ = level.Debug(p.logger).Log("msg", "planning", "type", "updateOld", "endpoint", ep, "zone", zoneName)
 
+		allEndpoints = append(allEndpoints, ep)
+
 		perZoneChanges[zoneName].UpdateOld = append(perZoneChanges[zoneName].UpdateOld, ep)
 	}
 
@@ -190,7 +202,7 @@ func (p *WrdProvider) ApplyChanges(ctx context.Context, changes *plan.Changes) e
 		perZoneChanges[zoneName].Delete = append(perZoneChanges[zoneName].Delete, ep)
 	}
 
-	if p.dryRun {
+	if p.dryRun > 0 {
 		_ = level.Info(p.logger).Log("msg", "dry run - not applying changes")
 		return nil
 	}

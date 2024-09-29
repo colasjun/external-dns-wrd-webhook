@@ -20,15 +20,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx
+  name: nginx-service-lb
   annotations:
     external-dns.alpha.kubernetes.io/hostname: test.example.com
     external-dns.alpha.kubernetes.io/internal-hostname: internaltest.example.com
 spec:
   selector:
     app: nginx
-  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 9376
+  type: LoadBalancer
